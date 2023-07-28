@@ -29,8 +29,8 @@ export class Api {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                name: inputValues.profileName,
-                about: inputValues.profileAbout
+                name: inputValues.name,
+                about: inputValues.about
             })
         })
             .then((this._checkError));

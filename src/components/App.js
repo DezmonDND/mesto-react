@@ -7,6 +7,8 @@ import PopupWithForm from "./PopupWithForm";
 import ImagePopup from './ImagePopup';
 import { api } from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
+import EditProfilePopup from "./EditProfilePopup";
+import EditAvatarPopup from "./EditAvatarPopup";
 
 
 function App() {
@@ -67,6 +69,23 @@ function App() {
       .catch((e) => console.log(`Error! ${e}`));
   }
 
+  function handleUpdateUser(inputValues) {
+    console.log(inputValues);
+    api.setUserInfo(inputValues)
+      .then((newUser) => {
+        setCurrentUser(newUser);
+        closeAllPopups();
+      })
+  }
+
+  function handleUpdateAvatar(inputValues) {
+    api.updateAvatar({ avatarLink: inputValues.avatar })
+      .then((newAvatar) => {
+        setCurrentUser(newAvatar)
+        closeAllPopups();
+      })
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <>
@@ -81,21 +100,10 @@ function App() {
           cards={cards}
         />
         <Footer />
-        <PopupWithForm
-          name='edit-profile'
-          title='Редактировать профиль'
+        <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
-          children={
-            <>
-              <input type="text" className="popup__input" id="popupName" placeholder="Имя" name="profileName" minLength="2"
-                maxLength="40" required></input>
-              <span className="popupName-error popup__input-error"></span>
-              <input type="text" className="popup__input" id="popupDescription" placeholder="О себе" name="profileAbout"
-                minLength="2" maxLength="200" required></input>
-              <span className="popupDescription-error popup__input-error"></span>
-            </>
-          }
+          onUpdateUser={handleUpdateUser}
         />
         <PopupWithForm
           name='edit-card'
@@ -113,18 +121,10 @@ function App() {
             </>
           }
         />
-        <PopupWithForm
-          name='avatar'
-          title='Обновить аватар'
+        <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
-          children={
-            <>
-              <input type="url" className="popup__input" id="newAvatarImage" placeholder="Ссылка на изображение"
-                name="avatarLink" required></input>
-              <span className="newAvatarImage-error popup__avatar-error"></span>
-            </>
-          }
+          onUpdateAvatar={handleUpdateAvatar}
         />
         <PopupWithForm
           name='delete-card'

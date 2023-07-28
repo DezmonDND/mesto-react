@@ -5,7 +5,7 @@ function ImagePopup(props) {
         < div
             className={`popup popup-${name} ${isOpen ? 'popup_opened' : ''}`}
             onClick={(e) => {
-                if (e.currentTarget.classList.contains('popup_opened')) {
+                if (e.target.classList.contains('popup_opened')) {
                     onClose()
                 }
             }}>
