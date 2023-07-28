@@ -26,7 +26,7 @@ function Main(props) {
                 <button className="profile__add-button" type="button" onClick={onAddPlace}></button>
             </section>
             <section className="elements">
-                {cards.map((card, _id) => (
+                {cards.map((card) => (
                     <Card
                         key={card._id}
                         card={card}
