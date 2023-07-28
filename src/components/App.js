@@ -9,6 +9,8 @@ import { api } from "../utils/Api";
 import { CurrentUserContext } from "../contexts/CurrentUserContext";
 import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
+import AddPlacePopup from "./AddPlacePopup";
+import DeleteCardPopup from "./DeleteCardPopup";
 
 
 function App() {
@@ -16,6 +18,7 @@ function App() {
   const [isAddPlacePopupOpen, setisAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
   const [isImagePopupOpen, setImagePopupOpen] = useState(false);
+  const [isDeleteCardPopupOpen, setDeleteCardPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState({});
   const [currentUser, setCurrentUser] = useState('');
   const [cards, setCards] = useState([]);
@@ -34,6 +37,7 @@ function App() {
     setisAddPlacePopupOpen(false)
     setEditAvatarPopupOpen(false)
     setImagePopupOpen(false)
+    setDeleteCardPopupOpen(false)
   }
 
   function handleCardClick(card) {
@@ -76,6 +80,7 @@ function App() {
         setCurrentUser(newUser);
         closeAllPopups();
       })
+      .catch((e) => console.log(`Error! ${e}`));
   }
 
   function handleUpdateAvatar(inputValues) {
@@ -84,6 +89,16 @@ function App() {
         setCurrentUser(newAvatar)
         closeAllPopups();
       })
+      .catch((e) => console.log(`Error! ${e}`));
+  }
+
+  function handleAddPlaceSubmit(inputValues) {
+    api.sentNewCard({ profileName: inputValues.name, profileAbout: inputValues.link })
+      .then((newCard) => {
+        setCards([newCard, ...cards]);
+        closeAllPopups();
+      })
+      .catch((e) => console.log(`Error! ${e}`));
   }
 
   return (
@@ -105,30 +120,18 @@ function App() {
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
         />
-        <PopupWithForm
-          name='edit-card'
-          title='Новое место'
+        <AddPlacePopup
           isOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
-          children={
-            <>
-              <input type="text" className="popup__input" id="newItemName" placeholder="Название" name="profileName"
-                minLength="2" maxLength="30" required></input>
-              <span className="newItemName-error popup__input-error"></span>
-              <input type="url" className="popup__input" id="newItemLink" placeholder="Ссылка на картинку" name="profileAbout"
-                required></input>
-              <span className="newItemLink-error popup__input-error"></span>
-            </>
-          }
+          onAddPlace={handleAddPlaceSubmit}
         />
         <EditAvatarPopup
           isOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
         />
-        <PopupWithForm
-          name='delete-card'
-          title='Вы уверены?'
+        <DeleteCardPopup
+          isOpen={isDeleteCardPopupOpen}
           onClose={closeAllPopups}
         />
         <ImagePopup
